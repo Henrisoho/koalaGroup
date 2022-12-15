@@ -4,7 +4,9 @@ $( document ).ready( function(){
   console.log( 'JQ' );
   setupClickListeners()
   getKoalas();
-  $('body').on('click', '.transferButton', transferKoala);
+  $('body').on('click', '.transferButton', transferKoalaY);
+  $('body').on('click', '.untransferButton', transferKoalaN);
+  $('body').on('click', '.deleteButton', deleteKoala);
 }); // end doc ready
 
 //CREATE KOALA
@@ -35,7 +37,7 @@ function getKoalas(){
   }).then(function(response) {
     $('#viewKoalas').empty();
     for (let koala of response) {
-    if(koala.ready_to_transfer == 'Y'){
+
       $('#viewKoalas').append(`
         <tr>
           <td>${koala.name}</td>
@@ -43,20 +45,11 @@ function getKoalas(){
           <td>${koala.age}</td>
           <td>${koala.ready_to_transfer}</td>
           <td>${koala.notes}</td>
-        </tr>
-    `);
-    } else{
-       $('#viewKoalas').append(`
-        <tr>
-          <td>${koala.name}</td>
-          <td>${koala.gender}</td>
-          <td>${koala.age}</td>
-          <td>${koala.ready_to_transfer}</td>
-          <td>${koala.notes}</td>
           <td><button data-id=${koala.id} class="transferButton">Ready To Transfer</button><td>
+          <td><button data-id=${koala.id} class="untransferButton">unReady To Transfer</button><td>
+          <td><button data-id=${koala.id} class="deleteButton">Delete</button><td>
         </tr>
     `);
-    }
     console.log(koala.id)
     }
   }).catch(function(error){
@@ -83,7 +76,7 @@ function saveKoala( newKoala ){
 }
 
 //UPDATE TRANSFER STATUS
-function transferKoala() {
+function transferKoalaY() {
   let idToUpdate = $(this).data().id;
   
   $.ajax({
@@ -97,5 +90,36 @@ function transferKoala() {
     getKoalas();
   }).catch((error) => {
     console.log(error);
+  })
+}
+
+function transferKoalaN() {
+  let idToUpdate = $(this).data().id;
+  
+  $.ajax({
+    method: 'PUT',
+    url: `/koalas/${idToUpdate}`,
+    data: {
+      ready_to_transfer: 'N'
+    }
+  }).then((response) => {
+    console.log(idToUpdate)
+    getKoalas();
+  }).catch((error) => {
+    console.log(error);
+  })
+}
+
+//DELETE KOALAS
+function deleteKoala() {
+  let idToDelete = $(this).data().id;
+
+  $.ajax({
+    method: 'DELETE',
+    url: `/koalas/${idToDelete}`
+  }).then((response) => {
+    getKoalas();
+  }).catch((error) => {
+    console.log('deleteCreature() sure broke:', error);
   })
 }
