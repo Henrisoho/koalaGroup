@@ -37,19 +37,33 @@ function getKoalas(){
   }).then(function(response) {
     $('#viewKoalas').empty();
     for (let koala of response) {
-
+      if(koala.ready_to_transfer == 'Y'){
       $('#viewKoalas').append(`
         <tr>
           <td>${koala.name}</td>
-          <td>${koala.gender}</td>
           <td>${koala.age}</td>
+          <td>${koala.gender}</td>
           <td>${koala.ready_to_transfer}</td>
           <td>${koala.notes}</td>
-          <td><button data-id=${koala.id} class="transferButton">Ready To Transfer</button><td>
-          <td><button data-id=${koala.id} class="untransferButton">unReady To Transfer</button><td>
-          <td><button data-id=${koala.id} class="deleteButton">Delete</button><td>
+          <td><button data-id=${koala.id} class="untransferButton">unReady To Transfer</button></td>
+          <td><button data-id=${koala.id} class="deleteButton">Delete</button></td>
         </tr>
     `);
+      }else{
+        $('#viewKoalas').append(`
+        <tr>
+          <td>${koala.name}</td>
+          <td>${koala.age}</td>
+          <td>${koala.gender}</td>
+          <td>${koala.ready_to_transfer}</td>
+          <td>${koala.notes}</td>
+
+          <td><button data-id=${koala.id} class="transferButton">Ready To Transfer</button></td>
+
+          <td><button data-id=${koala.id} class="deleteButton">Delete</button></td>
+        </tr>
+    `);
+      }
     console.log(koala.id)
     }
   }).catch(function(error){
